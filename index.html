@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>برای زری خانوم 💖</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body {
+    width:100%; height:100%; overflow:hidden;
+    background:#000;
+    font-family: 'Vazirmatn', Tahoma, sans-serif;
+  }
+  #scene-canvas { position:fixed; top:0; left:0; width:100%; height:100%; display:block; z-index:1; }
+
+  /* ---------- Loading / intro screen ---------- */
+  #loading-screen {
+    position:fixed; inset:0; z-index:200;
+    background: radial-gradient(ellipse at center, #1a0a2e 0%, #0a0510 55%, #000 100%);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:22px;
+  }
+  #loading-heart {
+    width:72px; height:66px;
+    filter: drop-shadow(0 0 14px #ff5fa2) drop-shadow(0 0 30px #a259ff);
+    animation: loadHeartPulse 1.4s ease-in-out infinite;
+  }
+  @keyframes loadHeartPulse {
+    0%,100% { transform:scale(1); }
+    50% { transform:scale(1.14); }
+  }
+  #loading-title {
+    color:#ffe6f2; font-weight:700; font-size:15px; letter-spacing:0.5px;
+    text-shadow:0 0 12px rgba(255,95,162,0.7);
+  }
+  #loading-bar-track {
+    width:min(70vw,260px); height:3px; border-radius:3px;
+    background:rgba(255,255,255,0.12); overflow:hidden;
+  }
+  #loading-bar-fill {
+    height:100%; width:0%;
+    background:linear-gradient(90deg,#ff5fa2,#a259ff,#ffd84d);
+    box-shadow:0 0 10px rgba(255,95,162,0.8);
+    transition:width 0.15s linear;
+  }
+  #loading-percent {
+    color:rgba(255,230,242,0.6); font-size:12px; letter-spacing:1px;
+  }
+
+  /* ---------- Neon decorative background layer ---------- */
+  #neon-bg {
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    z-index:0; pointer-events:none; overflow:hidden;
+  }
+  .neon-line {
+    position:absolute;
+    filter: drop-shadow(0 0 6px currentColor) drop-shadow(0 0 14px currentColor);
+    opacity:0.55;
+    animation: neonCycle 8s linear infinite, floatAround linear infinite;
+  }
+  @keyframes neonCycle {
+    0%   { color:#ff3df0; }
+    20%  { color:#a259ff; }
+    40%  { color:#33e0ff; }
+    60%  { color:#ff5fa2; }
+    80%  { color:#7c4dff; }
+    100% { color:#ff3df0; }
+  }
+  @keyframes floatAround {
+    from { transform: translate(0,0) rotate(0deg); }
+    to   { transform: translate(0,0) rotate(360deg); }
+  }
+  .comet-heart {
+    position:absolute;
+    opacity:0.8;
+    filter: drop-shadow(0 0 8px #ffd84d) drop-shadow(0 0 18px #ffd84d);
+  }
+
+  /* ---------- Top "I Love You" banner ---------- */
+  #love-banner {
+    position:fixed; top:18px; left:0; width:100%;
+    text-align:center; z-index:5; pointer-events:none;
+  }
+  #love-svg { width:min(90vw,420px); height:auto; }
+  .love-heart-outline {
+    fill:none;
+    stroke:#ff1744;
+    stroke-width:3.5;
+    filter: drop-shadow(0 0 6px #ff1744) drop-shadow(0 0 16px #ff1744) drop-shadow(0 0 28px #ff4f7a);
+    animation: pulseGlow 2.2s ease-in-out infinite;
+  }
+  @keyframes pulseGlow {
+    0%,100% { filter: drop-shadow(0 0 6px #ff1744) drop-shadow(0 0 16px #ff1744) drop-shadow(0 0 28px #ff4f7a); }
+    50% { filter: drop-shadow(0 0 12px #ff1744) drop-shadow(0 0 26px #ff1744) drop-shadow(0 0 42px #ff4f7a); }
+  }
+  .fw-particle { opacity:0; }
+
+  /* ---------- Message comet area ---------- */
+  #message-layer {
+    position:fixed; bottom:0; left:0; width:100%; height:42%;
+    z-index:4; pointer-events:none; overflow:hidden;
+  }
+  .msg-comet {
+    position:absolute;
+    display:flex; align-items:center; gap:10px;
+    white-space:nowrap;
+  }
+  .msg-star {
+    width:14px; height:14px; border-radius:50%;
+    background: radial-gradient(circle, #fff 0%, #ffd84d 40%, transparent 75%);
+    box-shadow: 0 0 12px 4px #ffd84d, 0 0 24px 10px #ff7eb3;
+    flex-shrink:0;
+  }
+  .msg-tail {
+    position:absolute;
+    height:2px;
+    background: linear-gradient(to left, rgba(255,216,77,0.9), transparent);
+    border-radius:2px;
+    top:50%; transform:translateY(-50%);
+    right:14px;
+  }
+  .msg-text {
+    font-size: clamp(15px, 4vw, 24px);
+    font-weight:600;
+    color:#fff;
+    background: linear-gradient(135deg, rgba(255,77,166,0.18), rgba(124,77,255,0.18));
+    border:1px solid rgba(255,255,255,0.25);
+    padding:8px 18px;
+    border-radius:30px;
+    backdrop-filter: blur(6px);
+    text-shadow: 0 0 8px rgba(255,182,219,0.9), 0 0 18px rgba(255,77,166,0.6);
+    box-shadow: 0 0 18px rgba(255,77,166,0.45), inset 0 0 20px rgba(255,255,255,0.06);
+    opacity:0;
+    transform: scale(0.3);
+    transition: opacity 0.5s cubic-bezier(.2,1.4,.4,1), transform 0.5s cubic-bezier(.2,1.4,.4,1);
+  }
+  .msg-text.show {
+    opacity:1;
+    transform: scale(1);
+  }
+
+  /* ---------- Play heart button ---------- */
+  #play-heart {
+    position:fixed;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    width:64px; height:58px;
+    z-index:10;
+    cursor:pointer;
+    background:none; border:none;
+    filter: drop-shadow(0 0 10px #ff5fa2) drop-shadow(0 0 22px #ff1744);
+    animation: heartBeat 1.3s ease-in-out infinite;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+  }
+  #play-heart.hidden {
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+  }
+  @keyframes heartBeat {
+    0%,100% { transform:translate(-50%,-50%) scale(1); }
+    15% { transform:translate(-50%,-50%) scale(1.15); }
+    30% { transform:translate(-50%,-50%) scale(1); }
+  }
+  #play-hint {
+    position:fixed; top:calc(50% + 42px); left:50%; transform:translateX(-50%);
+    color:#ffd9e6; font-size:13px; letter-spacing:0.5px;
+    text-shadow:0 0 8px rgba(255,95,162,0.8);
+    z-index:10; white-space:nowrap;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+  }
+  #play-hint.hidden { opacity:0; visibility:hidden; }
+
+  /* ---------- Touch / ambient / fireworks particle canvas ---------- */
+  #touch-canvas {
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    z-index:6; pointer-events:none;
+  }
+
+  /* ---------- Custom luxury cursor (desktop only) ---------- */
+  @media (pointer: fine) {
+    body { cursor:none; }
+    #cursor-dot {
+      position:fixed; top:0; left:0; width:12px; height:12px; border-radius:50%;
+      background:radial-gradient(circle, rgba(255,255,255,0.95), rgba(255,111,178,0.65) 55%, transparent 75%);
+      pointer-events:none; z-index:60; mix-blend-mode:screen;
+      transform:translate(-50%,-50%);
+      transition:width .25s ease, height .25s ease;
+    }
+    #cursor-ring {
+      position:fixed; top:0; left:0; width:32px; height:32px; border-radius:50%;
+      border:1px solid rgba(255,182,219,0.55);
+      pointer-events:none; z-index:59;
+      transform:translate(-50%,-50%);
+      transition:width .25s ease, height .25s ease, border-color .25s ease;
+    }
+  }
+  @media (pointer: coarse) {
+    #cursor-dot, #cursor-ring { display:none; }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .neon-line, .comet-heart, #play-heart, #loading-heart { animation:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div id="loading-screen">
+  <svg id="loading-heart" viewBox="0 0 64 58">
+    <path fill="#ff1744" d="M32,54 C32,54 4,32 4,14 C4,2 14,-2 22,4 C27,-3 37,-3 42,4 C50,-2 60,2 60,14 C60,32 32,54 32,54 Z"/>
+  </svg>
+  <div id="loading-title">در حال شکل‌گیری کهکشان عشق ✨</div>
+  <div id="loading-bar-track"><div id="loading-bar-fill"></div></div>
+  <div id="loading-percent">0%</div>
+</div>
+
+<div id="neon-bg"></div>
+<canvas id="scene-canvas"></canvas>
+<canvas id="touch-canvas"></canvas>
+
+<div id="love-banner">
+  <svg id="love-svg" viewBox="0 0 200 90">
+    <defs>
+      <clipPath id="heartClip">
+        <path d="M100,80 C100,80 20,35 20,5 C20,-12 45,-12 55,5 C65,-12 90,-12 100,5
+                 C90,-12 115,-12 125,5 C135,-12 160,-12 160,5 C160,35 100,80 100,80 Z"/>
+      </clipPath>
+    </defs>
+    <!-- fireworks clipped inside heart -->
+    <g clip-path="url(#heartClip)" id="fw-group"></g>
+    <!-- outline -->
+    <path class="love-heart-outline"
+      d="M100,80 C100,80 20,35 20,5 C20,-12 45,-12 55,5 C65,-12 90,-12 100,5
+         C90,-12 115,-12 125,5 C135,-12 160,-12 160,5 C160,35 100,80 100,80 Z"/>
+  </svg>
+</div>
+
+<button id="play-heart" aria-label="پخش آهنگ">
+  <svg viewBox="0 0 64 58" width="64" height="58">
+    <path fill="#ff1744" d="M32,54 C32,54 4,32 4,14 C4,2 14,-2 22,4 C27,-3 37,-3 42,4 C50,-2 60,2 60,14 C60,32 32,54 32,54 Z"/>
+  </svg>
+</button>
+<div id="play-hint">برای پخش آهنگ، قلب رو لمس کن 💗</div>
+
+<div id="message-layer"></div>
+
+<audio id="bg-audio" loop preload="auto">
+  <source src="song.mp3" type="audio/mpeg">
+</audio>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+/* =====================================================================
+   ROMANTIC CINEMATIC GALAXY HEART — main script
+   Sections:
+   1) Setup & helpers          6) Neon background decor
+   2) Galaxy                   7) Banner fireworks
+   3) Heart + Letter Z         8) Sky fireworks / ambient particles / cursor
+   4) Interaction & camera     9) Messages
+   5) Post-processing & loop  10) Audio + reactive drive
+   ===================================================================== */
+
+/* ---------------------------------------------------------------------
+   1) SETUP & HELPERS
+   --------------------------------------------------------------------- */
+function rand(min,max){ return Math.random()*(max-min)+min; }
+const isMobile = window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent);
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const canvas = document.getElementById('scene-canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(62, window.innerWidth/window.innerHeight, 0.1, 2000);
+camera.position.set(0, 0, 80); // starts far away for the cinematic intro dolly-in
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  composer.setSize(window.innerWidth, window.innerHeight);
+});
+
+/* A group that holds everything we want to slowly rotate together (galaxy) */
+const galaxyGroup = new THREE.Group();
+scene.add(galaxyGroup);
+
+/* A separate group for the heart so it can be rotated independently by touch/drag */
+const heartGroup = new THREE.Group();
+scene.add(heartGroup);
+
+function makeRadialGlowTexture(hexColor) {
+  const res = 128;
+  const cnv = document.createElement('canvas');
+  cnv.width = cnv.height = res;
+  const ctx = cnv.getContext('2d');
+  const grad = ctx.createRadialGradient(res/2,res/2,0, res/2,res/2,res/2);
+  grad.addColorStop(0, hexColor + 'ff');
+  grad.addColorStop(0.4, hexColor + '88');
+  grad.addColorStop(1, hexColor + '00');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0,0,res,res);
+  const tex = new THREE.CanvasTexture(cnv);
+  return tex;
+}
+
+/* ---------------------------------------------------------------------
+   2) GALAXY — multicolor cosmic point cloud (spiral distribution)
+   --------------------------------------------------------------------- */
+function buildGalaxy() {
+  const count = isMobile ? 7000 : 12000;
+  const positions = new Float32Array(count * 3);
+  const colors = new Float32Array(count * 3);
+
+  const colorInner = new THREE.Color('#ff6bd6'); // pink-magenta core
+  const colorMid   = new THREE.Color('#7c4dff'); // purple
+  const colorOuter = new THREE.Color('#33e0ff'); // cyan
+  const colorEdge  = new THREE.Color('#ffd84d'); // gold sparks
+
+  const radius = 24;
+  const branches = 5;
+  const spin = 1.6;
+  const randomness = 0.45;
+
+  for (let i = 0; i < count; i++) {
+    const i3 = i * 3;
+    const r = Math.pow(Math.random(), 1.4) * radius;
+    const branchAngle = (i % branches) / branches * Math.PI * 2;
+    const spinAngle = r * spin;
+
+    const randX = (Math.random() - 0.5) * randomness * r * 0.5;
+    const randY = (Math.random() - 0.5) * randomness * 0.6;
+    const randZ = (Math.random() - 0.5) * randomness * r * 0.5;
+
+    const angle = branchAngle + spinAngle;
+    positions[i3]     = Math.cos(angle) * r + randX;
+    positions[i3 + 1] = randY * 2.2;
+    positions[i3 + 2] = Math.sin(angle) * r + randZ;
+
+    let mixed;
+    const t = r / radius;
+    if (t < 0.33) mixed = colorInner.clone().lerp(colorMid, t/0.33);
+    else if (t < 0.66) mixed = colorMid.clone().lerp(colorOuter, (t-0.33)/0.33);
+    else mixed = colorOuter.clone().lerp(colorEdge, (t-0.66)/0.34);
+
+    if (Math.random() < 0.06) mixed = colorEdge.clone();
+    if (Math.random() < 0.04) mixed = colorInner.clone();
+
+    colors[i3] = mixed.r;
+    colors[i3+1] = mixed.g;
+    colors[i3+2] = mixed.b;
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+  const mat = new THREE.PointsMaterial({
+    size: 0.16,
+    sizeAttenuation: true,
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.9,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending
+  });
+
+  const points = new THREE.Points(geo, mat);
+  galaxyGroup.add(points);
+  window.__galaxyMat = mat;
+
+  const farCount = isMobile ? 1500 : 3000;
+  const farPos = new Float32Array(farCount*3);
+  for (let i=0;i<farCount;i++){
+    const i3=i*3;
+    const r = 60 + Math.random()*120;
+    const theta = Math.random()*Math.PI*2;
+    const phi = Math.acos((Math.random()*2)-1);
+    farPos[i3]   = r*Math.sin(phi)*Math.cos(theta);
+    farPos[i3+1] = r*Math.sin(phi)*Math.sin(theta);
+    farPos[i3+2] = r*Math.cos(phi);
+  }
+  const farGeo = new THREE.BufferGeometry();
+  farGeo.setAttribute('position', new THREE.BufferAttribute(farPos,3));
+  const farMat = new THREE.PointsMaterial({
+    size:0.5, color:0xbfd9ff, transparent:true, opacity:0.55,
+    depthWrite:false, blending: THREE.AdditiveBlending
+  });
+  scene.add(new THREE.Points(farGeo, farMat));
+}
+buildGalaxy();
+
+/* ---------------------------------------------------------------------
+   3) HEART + LETTER Z
+   --------------------------------------------------------------------- */
+function heartCurve(t) {
+  const x = 16 * Math.pow(Math.sin(t), 3);
+  const y = 13*Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t);
+  return { x, y };
+}
+
+const HEART_SCALE = 0.34;
+let heartGlowSprite;
+
+function buildHeart() {
+  const surfaceCount = isMobile ? 3200 : 6000;
+  const positions = new Float32Array(surfaceCount * 3);
+  const colors = new Float32Array(surfaceCount * 3);
+
+  const pink = new THREE.Color('#ff3fa2');
+  const hotPink = new THREE.Color('#ff8fd0');
+  const coreWhite = new THREE.Color('#ffe8f5');
+
+  for (let i = 0; i < surfaceCount; i++) {
+    const i3 = i*3;
+    const t = Math.random() * Math.PI * 2;
+    const { x, y } = heartCurve(t);
+
+    const fill = Math.pow(Math.random(), 0.5);
+    const sx = x * fill;
+    const sy = y * fill;
+    const sz = (Math.random() - 0.5) * 5 * (1-fill*0.4);
+
+    const jitter = 0.5;
+    positions[i3]   = sx * HEART_SCALE + (Math.random()-0.5)*jitter;
+    positions[i3+1] = sy * HEART_SCALE + (Math.random()-0.5)*jitter;
+    positions[i3+2] = sz * HEART_SCALE + (Math.random()-0.5)*jitter;
+
+    // bright volumetric core near center, pink toward the surface (crystal feel)
+    const c = fill < 0.35 ? pink.clone().lerp(coreWhite, 1-fill/0.35) : pink.clone().lerp(hotPink, Math.random());
+    colors[i3]=c.r; colors[i3+1]=c.g; colors[i3+2]=c.b;
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(positions,3));
+  geo.setAttribute('color', new THREE.BufferAttribute(colors,3));
+
+  const mat = new THREE.PointsMaterial({
+    size: 0.22,
+    vertexColors: true,
+    transparent:true,
+    opacity:0.95,
+    depthWrite:false,
+    blending: THREE.AdditiveBlending
+  });
+
+  const heartPoints = new THREE.Points(geo, mat);
+  heartGroup.add(heartPoints);
+  window.__heartMat = mat;
+
+  const glowTex = makeRadialGlowTexture('#ff3fa2');
+  const glowMat = new THREE.SpriteMaterial({ map: glowTex, transparent:true, opacity:0.5, depthWrite:false, blending: THREE.AdditiveBlending });
+  heartGlowSprite = new THREE.Sprite(glowMat);
+  heartGlowSprite.scale.set(14,14,1);
+  heartGlowSprite.position.z = -1.5; // behind the point cloud so it doesn't cover the silhouette
+  heartGroup.add(heartGlowSprite);
+}
+
+let zPointsRef;
+function buildLetterZ(heartScale) {
+  const res = 220;
+  const cnv = document.createElement('canvas');
+  cnv.width = cnv.height = res;
+  const ctx = cnv.getContext('2d');
+  ctx.clearRect(0,0,res,res);
+  ctx.fillStyle = '#fff';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = `italic 700 ${res*0.62}px "Brush Script MT", "Segoe Script", cursive, serif`;
+  ctx.fillText('Z', res/2, res/2 + res*0.05);
+
+  const imgData = ctx.getImageData(0,0,res,res).data;
+  const pts = [];
+  for (let y=0; y<res; y+=1) {
+    for (let x=0; x<res; x+=1) {
+      const idx = (y*res + x) * 4;
+      const alpha = imgData[idx+3];
+      if (alpha > 90) {
+        const nx = (x/res - 0.5) * 2;
+        const ny = -(y/res - 0.5) * 2;
+        pts.push([nx, ny]);
+      }
+    }
+  }
+
+  const perPixel = isMobile ? 2 : 3;
+  const total = pts.length * perPixel;
+  const positions = new Float32Array(total*3);
+  const colors = new Float32Array(total*3);
+  const zColor = new THREE.Color('#ffe9b8');   // warm gold
+  const zColor2 = new THREE.Color('#fff6da');  // pale gold shimmer
+
+  const letterScale = 4.2 * heartScale * 3.1;
+  let p = 0;
+  for (let i=0;i<pts.length;i++){
+    for (let k=0;k<perPixel;k++){
+      const jitter = 0.018;
+      const x = pts[i][0]*letterScale + (Math.random()-0.5)*jitter*letterScale;
+      const y = pts[i][1]*letterScale + (Math.random()-0.5)*jitter*letterScale;
+      const z = (Math.random()-0.5)*0.6;
+      positions[p*3]=x; positions[p*3+1]=y; positions[p*3+2]=z;
+      const c = zColor.clone().lerp(zColor2, Math.random());
+      colors[p*3]=c.r; colors[p*3+1]=c.g; colors[p*3+2]=c.b;
+      p++;
+    }
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(positions,3));
+  geo.setAttribute('color', new THREE.BufferAttribute(colors,3));
+  const mat = new THREE.PointsMaterial({
+    size:0.16, vertexColors:true, transparent:true, opacity:1,
+    depthWrite:false, blending: THREE.AdditiveBlending
+  });
+  const zPoints = new THREE.Points(geo, mat);
+  zPoints.position.z = 1.2;
+  heartGroup.add(zPoints);
+  return zPoints;
+}
+
+buildHeart();
+zPointsRef = buildLetterZ(HEART_SCALE);
+
+// a single golden sparkle that periodically sweeps across the Z (luxury shimmer)
+const zSparkle = new THREE.Sprite(new THREE.SpriteMaterial({
+  map: makeRadialGlowTexture('#fff6d8'), transparent:true, opacity:0,
+  depthWrite:false, blending: THREE.AdditiveBlending
+}));
+zSparkle.scale.set(1.4,1.4,1.4);
+zSparkle.position.set(-3,-2,1.6);
+heartGroup.add(zSparkle);
+function loopZSparkle(){
+  if (prefersReducedMotion || !window.gsap) return;
+  gsap.timeline({ onComplete: loopZSparkle, delay: rand(2.5,5.5) })
+    .set(zSparkle.position, { x:-3, y:-2 })
+    .to(zSparkle.material, { opacity:0.9, duration:0.3 })
+    .to(zSparkle.position, { x:3, y:2, duration:0.9, ease:'power1.inOut' }, "<")
+    .to(zSparkle.material, { opacity:0, duration:0.35 });
+}
+loopZSparkle();
+
+// tiny particles continuously escaping the heart (energy wisps)
+const escapeTex = makeRadialGlowTexture('#ffb3dd');
+const escapePool = [];
+const MAX_ESCAPE = isMobile ? 10 : 18;
+function spawnEscapeParticle(){
+  if (document.hidden || prefersReducedMotion || escapePool.length >= MAX_ESCAPE) return;
+  const mat = new THREE.SpriteMaterial({ map:escapeTex, transparent:true, opacity:0.9, depthWrite:false, blending:THREE.AdditiveBlending });
+  const spr = new THREE.Sprite(mat);
+  const t = Math.random()*Math.PI*2;
+  const { x, y } = heartCurve(t);
+  spr.position.set(x*HEART_SCALE, y*HEART_SCALE, (Math.random()-0.5)*3);
+  const size = rand(0.3,0.6);
+  spr.scale.set(size,size,size);
+  spr.userData = { vy: rand(0.01,0.028), vx:(Math.random()-0.5)*0.01, life:1, decay: rand(0.004,0.009) };
+  heartGroup.add(spr);
+  escapePool.push(spr);
+}
+setInterval(spawnEscapeParticle, 260);
+function updateEscapeParticles(){
+  for (let i=escapePool.length-1;i>=0;i--){
+    const s = escapePool[i];
+    s.position.y += s.userData.vy;
+    s.position.x += s.userData.vx;
+    s.userData.life -= s.userData.decay;
+    s.material.opacity = Math.max(s.userData.life,0)*0.9;
+    s.scale.multiplyScalar(1.004);
+    if (s.userData.life<=0){
+      heartGroup.remove(s);
+      s.material.dispose();
+      escapePool.splice(i,1);
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------
+   4) INTERACTION & CAMERA — drag to rotate, elastic release, cinematic idle motion
+   --------------------------------------------------------------------- */
+let isDragging = false;
+let prevX = 0, prevY = 0;
+let velX = 0, velY = 0; // inertia
+const releasePunch = { v: 1 }; // elastic "squish" applied on release
+
+function onPointerDown(x,y){ isDragging = true; prevX = x; prevY = y; }
+function onPointerMove(x,y){
+  if (!isDragging) return;
+  const dx = x - prevX;
+  const dy = y - prevY;
+  velY = dx * 0.005;
+  velX = dy * 0.005;
+  heartGroup.rotation.y += velY;
+  heartGroup.rotation.x += velX;
+  prevX = x; prevY = y;
+}
+function onPointerUp(){
+  if (isDragging && window.gsap && !prefersReducedMotion) {
+    gsap.fromTo(releasePunch, { v:1.09 }, { v:1, duration:0.7, ease:'elastic.out(1,0.4)' });
+  }
+  isDragging = false;
+}
+
+canvas.addEventListener('mousedown', e => onPointerDown(e.clientX, e.clientY));
+window.addEventListener('mousemove', e => onPointerMove(e.clientX, e.clientY));
+window.addEventListener('mouseup', onPointerUp);
+
+canvas.addEventListener('touchstart', e => {
+  const t = e.touches[0];
+  onPointerDown(t.clientX, t.clientY);
+}, {passive:true});
+window.addEventListener('touchmove', e => {
+  const t = e.touches[0];
+  onPointerMove(t.clientX, t.clientY);
+}, {passive:true});
+window.addEventListener('touchend', onPointerUp);
+
+// gentle mouse parallax for the camera (desktop only, subtle)
+let parallaxX = 0, parallaxY = 0;
+if (window.matchMedia('(pointer: fine)').matches) {
+  window.addEventListener('mousemove', e => {
+    parallaxX = (e.clientX / window.innerWidth - 0.5) * 2;
+    parallaxY = (e.clientY / window.innerHeight - 0.5) * 2;
+  });
+}
+
+// camera dolly state, tweened during the intro then left at rest
+const camState = { z: 80 };
+let introScale = { v: 0.001 }; // heart scale-in on intro
+function introCameraSequence(){
+  if (!window.gsap) { camState.z = 34; introScale.v = 1; return; }
+  gsap.to(camState, { z:34, duration:2.4, ease:'power3.out', delay:0.1 });
+  gsap.to(introScale, { v:1, duration:2, ease:'elastic.out(1,0.55)', delay:0.25 });
+}
+
+/* ---------------------------------------------------------------------
+   5) POST-PROCESSING & MAIN ANIMATION LOOP
+   --------------------------------------------------------------------- */
+const composer = new THREE.EffectComposer(renderer);
+composer.addPass(new THREE.RenderPass(scene, camera));
+const bloomRes = new THREE.Vector2(
+  window.innerWidth * (isMobile ? 0.75 : 1),
+  window.innerHeight * (isMobile ? 0.75 : 1)
+);
+const bloomPass = new THREE.UnrealBloomPass(bloomRes, 0.85, 0.4, 0.28);
+const baseBloomStrength = bloomPass.strength;
+composer.addPass(bloomPass);
+
+const clock = new THREE.Clock();
+let lastClimax = 0;
+
+function triggerClimax(){
+  if (window.gsap) {
+    const boost = { v: 0 };
+    gsap.to(boost, { v:1, duration:0.45, yoyo:true, repeat:1, onUpdate:() => {
+      bloomPass.strength = baseBloomStrength + boost.v * 1.6;
+    }});
+  }
+  for (let i=0;i<5;i++) setTimeout(() => spawnSkyFirework(), i*180);
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  const t = clock.getElapsedTime();
+  const audioLevel = getAudioLevel(); // 0..1, 0 if no audio graph yet
+
+  // galaxy slow ambient rotation, gently brighter with the music
+  galaxyGroup.rotation.y = t * 0.04;
+  if (window.__galaxyMat) window.__galaxyMat.opacity = 0.82 + audioLevel*0.18;
+
+  // heart gentle auto-rotation + inertia from drag, with damping
+  if (!isDragging) {
+    heartGroup.rotation.y += velY;
+    heartGroup.rotation.x += velX;
+    velY *= 0.94;
+    velX *= 0.94;
+    heartGroup.rotation.y += 0.0025;
+  }
+
+  // heartbeat pulse, boosted by music amplitude, combined with intro scale-in + release squish
+  const pulse = 1 + Math.sin(t*2.4)*0.035 + audioLevel*0.14;
+  const s = pulse * introScale.v * releasePunch.v;
+  heartGroup.scale.set(s,s,s);
+  if (heartGlowSprite) heartGlowSprite.material.opacity = 0.4 + audioLevel*0.4 + Math.sin(t*2.4)*0.08;
+  if (zPointsRef) zPointsRef.material.opacity = 0.85 + Math.sin(t*3)*0.15;
+
+  updateEscapeParticles();
+
+  // cinematic camera: slow orbit + breathing zoom + parallax, resolves from the intro dolly
+  const camAngle = t * 0.03;
+  const breathe = Math.sin(t*0.5) * 0.6;
+  const orbitR = 2.2;
+  camera.position.x = Math.sin(camAngle)*orbitR + parallaxX*1.2;
+  camera.position.y = Math.cos(camAngle*0.7)*orbitR*0.5 + parallaxY*0.8;
+  camera.position.z = camState.z + breathe + audioLevel*1.6;
+  camera.lookAt(0,0,0);
+
+  // periodic "climax" moment: bigger bloom flash + burst of sky fireworks
+  if (!prefersReducedMotion && t - lastClimax > 55 && introScale.v > 0.9) {
+    lastClimax = t;
+    triggerClimax();
+  } else {
+    bloomPass.strength = baseBloomStrength + audioLevel*0.5;
+  }
+
+  composer.render();
+}
+animate();
+
+/* =====================================================================
+   6) NEON BACKGROUND DECOR — roses, hearts, comet-hearts (CSS/SVG layer)
+   ===================================================================== */
+const neonBg = document.getElementById('neon-bg');
+
+const ROSE_PATH = "M50,90 C20,70 10,40 30,25 C20,15 30,0 45,8 C50,0 60,0 60,12 C75,2 90,18 75,30 C95,40 85,68 50,90 Z M50,90 L50,130";
+const HEART_PATH = "M50,90 C50,90 5,55 5,25 C5,5 25,-5 40,8 C45,-5 65,-5 70,8 C85,-5 95,5 95,25 C95,55 50,90 50,90 Z";
+
+function createNeonLine(svgPath, sizePx) {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'neon-line';
+  const top = rand(0,90);
+  const left = rand(0,85);
+  wrapper.style.top = top + 'vh';
+  wrapper.style.left = left + 'vw';
+  wrapper.style.animationDuration = rand(6,11) + 's, ' + rand(30,70) + 's';
+  wrapper.style.animationDelay = rand(-8,0) + 's, ' + rand(-30,0) + 's';
+
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(svgNS, 'svg');
+  svg.setAttribute('width', sizePx);
+  svg.setAttribute('height', sizePx);
+  svg.setAttribute('viewBox', '0 0 100 130');
+  const path = document.createElementNS(svgNS, 'path');
+  path.setAttribute('d', svgPath);
+  path.setAttribute('fill', 'none');
+  path.setAttribute('stroke', 'currentColor');
+  path.setAttribute('stroke-width', '2.4');
+  svg.appendChild(path);
+  wrapper.appendChild(svg);
+  neonBg.appendChild(wrapper);
+}
+
+const neonLineCount = isMobile ? 4 : 7;
+const neonHeartCount = isMobile ? 3 : 6;
+for (let i=0;i<neonLineCount;i++) createNeonLine(ROSE_PATH, rand(40,80));
+for (let i=0;i<neonHeartCount;i++) createNeonLine(HEART_PATH, rand(30,60));
+
+function createCometHeart(i) {
+  const el = document.createElement('div');
+  el.className = 'comet-heart';
+  const size = rand(22,38);
+  el.style.width = size+'px';
+  el.style.height = size+'px';
+  const svgNS='http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(svgNS,'svg');
+  svg.setAttribute('viewBox','0 0 100 130');
+  svg.setAttribute('width','100%');
+  svg.setAttribute('height','100%');
+  const path = document.createElementNS(svgNS,'path');
+  path.setAttribute('d', HEART_PATH);
+  path.setAttribute('fill','none');
+  path.setAttribute('stroke','#ffd84d');
+  path.setAttribute('stroke-width','3');
+  svg.appendChild(path);
+  el.appendChild(svg);
+  neonBg.appendChild(el);
+
+  const cx = rand(20,80), cy = rand(20,80);
+  const radius = rand(15,40);
+  const speed = rand(0.15,0.3);
+  const phase = rand(0, Math.PI*2);
+  el.dataset.cx = cx; el.dataset.cy = cy; el.dataset.radius = radius;
+  el.dataset.speed = speed; el.dataset.phase = phase;
+  return el;
+}
+const cometHearts = [];
+for (let i=0;i<5;i++) cometHearts.push(createCometHeart(i));
+
+function animateComets(timestamp) {
+  const t = timestamp * 0.001;
+  cometHearts.forEach(el => {
+    const cx = parseFloat(el.dataset.cx);
+    const cy = parseFloat(el.dataset.cy);
+    const radius = parseFloat(el.dataset.radius);
+    const speed = parseFloat(el.dataset.speed);
+    const phase = parseFloat(el.dataset.phase);
+    const angle = t*speed + phase;
+    const x = cx + Math.cos(angle)*radius;
+    const y = cy + Math.sin(angle)*radius*0.6;
+    el.style.left = x + 'vw';
+    el.style.top = y + 'vh';
+    el.style.transform = `rotate(${angle*40}deg)`;
+  });
+  requestAnimationFrame(animateComets);
+}
+requestAnimationFrame(animateComets);
+
+/* =====================================================================
+   7) TOP "I LOVE YOU" HEART — fireworks inside (pink/purple/red)
+   ===================================================================== */
+const fwGroup = document.getElementById('fw-group');
+const fwColors = ['#ff3df0','#a259ff','#ff1744','#ff7eb3','#c14dff'];
+
+function spawnFirework() {
+  if (document.hidden) return;
+  const cx = rand(60,140);
+  const cy = rand(10,55);
+  const particleCount = 10;
+  for (let i=0;i<particleCount;i++){
+    const angle = (Math.PI*2/particleCount)*i + rand(-0.2,0.2);
+    const dist = rand(8,22);
+    const dx = Math.cos(angle)*dist;
+    const dy = Math.sin(angle)*dist;
+    const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    circle.setAttribute('cx', cx);
+    circle.setAttribute('cy', cy);
+    circle.setAttribute('r', rand(1,2.2));
+    const color = fwColors[Math.floor(Math.random()*fwColors.length)];
+    circle.setAttribute('fill', color);
+    circle.classList.add('fw-particle');
+    fwGroup.appendChild(circle);
+
+    const duration = rand(700,1100);
+    const start = performance.now();
+    function step(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed/duration, 1);
+      const ease = 1 - Math.pow(1-progress, 2);
+      circle.setAttribute('cx', cx + dx*ease);
+      circle.setAttribute('cy', cy + dy*ease);
+      circle.style.opacity = (1-progress);
+      if (progress < 1) requestAnimationFrame(step);
+      else circle.remove();
+    }
+    requestAnimationFrame(step);
+  }
+}
+setInterval(spawnFirework, 450);
+spawnFirework();
+
+/* =====================================================================
+   8) SKY FIREWORKS + AMBIENT PARTICLES (fireflies/petals) + CURSOR + TOUCH SPARKLES
+   All rendered on the single full-screen #touch-canvas for performance.
+   ===================================================================== */
+const touchCanvas = document.getElementById('touch-canvas');
+const tctx = touchCanvas.getContext('2d');
+function resizeTouchCanvas(){
+  touchCanvas.width = window.innerWidth;
+  touchCanvas.height = window.innerHeight;
+}
+resizeTouchCanvas();
+window.addEventListener('resize', resizeTouchCanvas);
+
+/* ---- touch sparkles ---- */
+const sparkles = [];
+const sparkleColors = ['#ff7eb3','#ffd84d','#a259ff','#33e0ff','#ff3df0'];
+function spawnSparkles(x,y,count) {
+  count = count || 12;
+  for (let i=0;i<count;i++){
+    const angle = Math.random()*Math.PI*2;
+    const speed = rand(1,4);
+    sparkles.push({
+      x, y,
+      vx: Math.cos(angle)*speed,
+      vy: Math.sin(angle)*speed,
+      life: 1,
+      size: rand(1.5,3.5),
+      color: sparkleColors[Math.floor(Math.random()*sparkleColors.length)]
+    });
+  }
+}
+function handleTouch(x,y){ spawnSparkles(x,y); }
+window.addEventListener('mousedown', e => handleTouch(e.clientX, e.clientY));
+window.addEventListener('touchstart', e => {
+  for (const t of e.touches) handleTouch(t.clientX, t.clientY);
+}, {passive:true});
+window.addEventListener('touchmove', e => {
+  for (const t of e.touches) handleTouch(t.clientX, t.clientY);
+}, {passive:true});
+
+/* ---- sky fireworks: shockwave + varied burst shapes (circle / star / heart) ---- */
+const skyFireworks = [];
+const skyColors = ['#ff5fa2','#a259ff','#ffd84d','#33e0ff','#ff3df0','#ffffff'];
+function spawnSkyFirework(px, py) {
+  if (document.hidden) return;
+  const cx = px !== undefined ? px : rand(window.innerWidth*0.15, window.innerWidth*0.85);
+  const cy = py !== undefined ? py : rand(window.innerHeight*0.12, window.innerHeight*0.5);
+  const shapeRoll = Math.random();
+  const count = isMobile ? 26 : 40;
+  const baseColor = skyColors[Math.floor(Math.random()*skyColors.length)];
+  const particles = [];
+  for (let i=0;i<count;i++){
+    let vx, vy;
+    if (shapeRoll < 0.3) {
+      // heart-shaped burst: each particle flies straight toward its point on the
+      // heart curve, so the burst itself traces out a heart. heartCurve() uses a
+      // math y-up convention, so flip y for screen space (canvas y grows downward).
+      const ht = (i/count)*Math.PI*2;
+      const hc = heartCurve(ht);
+      const spread = rand(2.8, 3.6);
+      vx = hc.x * spread * 0.02;
+      vy = -hc.y * spread * 0.02;
+    } else if (shapeRoll < 0.55) {
+      const spokes = 5;
+      const angle = ((i%spokes)/spokes)*Math.PI*2 + rand(-0.05,0.05);
+      const dist = rand(40,110);
+      vx = Math.cos(angle)*dist*0.02;
+      vy = Math.sin(angle)*dist*0.02;
+    } else {
+      const angle = Math.random()*Math.PI*2;
+      const dist = rand(40,120);
+      vx = Math.cos(angle)*dist*0.02;
+      vy = Math.sin(angle)*dist*0.02;
+    }
+    particles.push({
+      x:cx, y:cy,
+      vx, vy,
+      life:1, decay: rand(0.008,0.016),
+      size: rand(1.5,3),
+      color: Math.random()<0.25 ? '#ffffff' : baseColor
+    });
+  }
+  skyFireworks.push({ particles, shock:{ x:cx, y:cy, r:0, life:1 } });
+}
+setInterval(() => spawnSkyFirework(), 3400);
+
+function renderSkyFireworks(){
+  for (let f=skyFireworks.length-1; f>=0; f--) {
+    const fw = skyFireworks[f];
+    let alive = false;
+    if (fw.shock.life > 0){
+      fw.shock.r += 4;
+      fw.shock.life -= 0.03;
+      tctx.globalAlpha = Math.max(fw.shock.life,0)*0.5;
+      tctx.strokeStyle = '#ffffff';
+      tctx.lineWidth = 2;
+      tctx.beginPath();
+      tctx.arc(fw.shock.x, fw.shock.y, fw.shock.r, 0, Math.PI*2);
+      tctx.stroke();
+      alive = true;
+    }
+    for (const p of fw.particles) {
+      if (p.life <= 0) continue;
+      p.x += p.vx; p.y += p.vy;
+      p.vy += 0.02 * 0.03;
+      p.vx *= 0.985; p.vy *= 0.985;
+      p.life -= p.decay;
+      if (p.life > 0){
+        alive = true;
+        tctx.globalAlpha = Math.max(p.life,0);
+        tctx.fillStyle = p.color;
+        tctx.shadowColor = p.color;
+        tctx.shadowBlur = 10;
+        tctx.beginPath();
+        tctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+        tctx.fill();
+      }
+    }
+    if (!alive) skyFireworks.splice(f,1);
+  }
+  tctx.globalAlpha = 1;
+}
+
+/* ---- ambient particles: fireflies + falling rose petals ---- */
+const ambientParticles = [];
+function initAmbientParticles(){
+  if (prefersReducedMotion) return;
+  const count = isMobile ? 12 : 24;
+  for (let i=0;i<count;i++){
+    const type = Math.random()<0.5 ? 'firefly' : 'petal';
+    ambientParticles.push({
+      type,
+      x: Math.random()*window.innerWidth,
+      y: Math.random()*window.innerHeight,
+      vx: (Math.random()-0.5)*0.3,
+      vy: type==='petal' ? rand(0.15,0.4) : (Math.random()-0.5)*0.2,
+      size: type==='petal' ? rand(4,8) : rand(1.5,3),
+      hue: type==='firefly' ? '#ffe36b' : (Math.random()<0.5 ? '#ff6bb8' : '#ff9ecb'),
+      phase: Math.random()*Math.PI*2,
+      sway: rand(0.3,0.8)
+    });
+  }
+}
+initAmbientParticles();
+function renderAmbientParticles(t){
+  for (const a of ambientParticles) {
+    a.x += a.vx + Math.sin(t*a.sway + a.phase)*0.15;
+    a.y += a.vy;
+    if (a.y > window.innerHeight+10) { a.y=-10; a.x=Math.random()*window.innerWidth; }
+    if (a.x < -10) a.x = window.innerWidth+10;
+    if (a.x > window.innerWidth+10) a.x = -10;
+    if (a.type === 'firefly'){
+      const tw = 0.5 + 0.5*Math.sin(t*3 + a.phase);
+      tctx.globalAlpha = 0.35 + tw*0.5;
+      tctx.fillStyle = a.hue;
+      tctx.shadowColor = a.hue;
+      tctx.shadowBlur = 10;
+      tctx.beginPath();
+      tctx.arc(a.x,a.y,a.size,0,Math.PI*2);
+      tctx.fill();
+    } else {
+      tctx.save();
+      tctx.globalAlpha = 0.55;
+      tctx.translate(a.x,a.y);
+      tctx.rotate(t*0.2 + a.phase);
+      tctx.fillStyle = a.hue;
+      tctx.shadowColor = a.hue;
+      tctx.shadowBlur = 6;
+      tctx.beginPath();
+      tctx.ellipse(0,0,a.size,a.size*0.55,0,0,Math.PI*2);
+      tctx.fill();
+      tctx.restore();
+    }
+  }
+  tctx.globalAlpha = 1;
+}
+
+function renderTouchLayer(now){
+  tctx.clearRect(0,0,touchCanvas.width, touchCanvas.height);
+  const t = now*0.001;
+
+  renderAmbientParticles(t);
+
+  for (let i = sparkles.length-1; i>=0; i--) {
+    const sp = sparkles[i];
+    sp.x += sp.vx;
+    sp.y += sp.vy;
+    sp.vy += 0.03;
+    sp.life -= 0.02;
+    if (sp.life <= 0) { sparkles.splice(i,1); continue; }
+    tctx.globalAlpha = Math.max(sp.life,0);
+    tctx.beginPath();
+    tctx.fillStyle = sp.color;
+    tctx.shadowColor = sp.color;
+    tctx.shadowBlur = 8;
+    tctx.arc(sp.x, sp.y, sp.size, 0, Math.PI*2);
+    tctx.fill();
+  }
+  tctx.globalAlpha = 1;
+
+  renderSkyFireworks();
+
+  requestAnimationFrame(renderTouchLayer);
+}
+requestAnimationFrame(renderTouchLayer);
+
+/* ---- luxury custom cursor (desktop only) ---- */
+if (window.matchMedia('(pointer: fine)').matches) {
+  const cursorDot = document.createElement('div'); cursorDot.id = 'cursor-dot'; document.body.appendChild(cursorDot);
+  const cursorRing = document.createElement('div'); cursorRing.id = 'cursor-ring'; document.body.appendChild(cursorRing);
+  let mx = window.innerWidth/2, my = window.innerHeight/2, rx = mx, ry = my;
+  window.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursorDot.style.left = mx + 'px';
+    cursorDot.style.top = my + 'px';
+    if (!prefersReducedMotion && Math.random() < 0.12) spawnSparkles(mx, my, 2);
+  });
+  function animCursorRing(){
+    rx += (mx-rx)*0.15; ry += (my-ry)*0.15;
+    cursorRing.style.left = rx + 'px';
+    cursorRing.style.top = ry + 'px';
+    requestAnimationFrame(animCursorRing);
+  }
+  animCursorRing();
+  const magneticEl = document.getElementById('play-heart');
+  magneticEl.addEventListener('mouseenter', () => {
+    cursorDot.style.width = '24px'; cursorDot.style.height = '24px';
+    cursorRing.style.width = '52px'; cursorRing.style.height = '52px';
+    cursorRing.style.borderColor = 'rgba(255,95,162,0.9)';
+  });
+  magneticEl.addEventListener('mouseleave', () => {
+    cursorDot.style.width = '12px'; cursorDot.style.height = '12px';
+    cursorRing.style.width = '32px'; cursorRing.style.height = '32px';
+    cursorRing.style.borderColor = 'rgba(255,182,219,0.55)';
+  });
+}
+
+/* =====================================================================
+   9) MESSAGE COMETS — looping queue of romantic messages
+   ===================================================================== */
+const messages = [
+  "منیم بالام، امیر سنه قوربان ❤️",
+  "منیم سوگیلیم دونیامسان 🫀💖",
+  "🌹 فدای تو بشم زری خانوم 🫂",
+  "🥰 منیم عشقیم کیمدییی؟ 💕",
+  "گوگولی بالام کیمدییی؟ 🤗💋",
+  "🤍 بغلت تنها جاییه که میتونم آروم بشم 🫂",
+  "🌎 دنیای منی ✨",
+  "🌬️ نفس من ❤️",
+  "نور زندگیم 💛"
+];
+
+const messageLayer = document.getElementById('message-layer');
+let msgIndex = 0;
+
+function showNextMessage() {
+  const text = messages[msgIndex % messages.length];
+  msgIndex++;
+
+  const comet = document.createElement('div');
+  comet.className = 'msg-comet';
+  const startX = rand(10, 70);
+  const startY = rand(5, 75);
+  comet.style.left = startX + 'vw';
+  comet.style.top = startY + '%';
+
+  const star = document.createElement('div');
+  star.className = 'msg-star';
+  const tail = document.createElement('div');
+  tail.className = 'msg-tail';
+  tail.style.width = '70px';
+
+  const textEl = document.createElement('div');
+  textEl.className = 'msg-text';
+  textEl.textContent = text;
+
+  comet.appendChild(textEl);
+  comet.appendChild(star);
+  comet.appendChild(tail);
+  messageLayer.appendChild(comet);
+
+  const travelDistance = rand(90, 130);
+  comet.style.transform = `translateX(${travelDistance}vw)`;
+  comet.style.transition = 'transform 1.1s cubic-bezier(.16,.8,.3,1)';
+  requestAnimationFrame(() => {
+    comet.style.transform = `translateX(${-travelDistance*0.15}vw)`;
+  });
+
+  // message "opens" — reveal text + a small stardust burst at the star
+  setTimeout(() => {
+    star.style.transition = 'opacity 0.4s ease';
+    star.style.opacity = '0.15';
+    tail.style.transition = 'opacity 0.4s ease';
+    tail.style.opacity = '0';
+    textEl.classList.add('show');
+    const rect = star.getBoundingClientRect();
+    spawnSparkles(rect.left + rect.width/2, rect.top + rect.height/2, 10);
+  }, 950);
+
+  setTimeout(() => {
+    textEl.classList.remove('show');
+    comet.style.transition = 'opacity 0.6s ease';
+    comet.style.opacity = '0';
+  }, 3600);
+
+  setTimeout(() => {
+    comet.remove();
+  }, 4300);
+}
+
+showNextMessage();
+setInterval(showNextMessage, 4200);
+
+/* =====================================================================
+   10) AUDIO — play-on-touch heart button + Web Audio analyser (reactive drive)
+   ===================================================================== */
+const audio = document.getElementById('bg-audio');
+const playHeart = document.getElementById('play-heart');
+const playHint = document.getElementById('play-hint');
+
+let audioCtx, analyser, freqData, audioGraphReady = false;
+function setupAudioAnalyser(){
+  if (audioGraphReady) return;
+  try {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const source = audioCtx.createMediaElementSource(audio);
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 128;
+    freqData = new Uint8Array(analyser.frequencyBinCount);
+    source.connect(analyser);
+    analyser.connect(audioCtx.destination);
+    audioGraphReady = true;
+  } catch (e) {
+    // Autoplay policies or CORS can block this — the visuals fall back to a
+    // synthetic heartbeat pulse only, everything else keeps working fine.
+  }
+}
+function getAudioLevel(){
+  if (!analyser) return 0;
+  analyser.getByteFrequencyData(freqData);
+  let sum = 0;
+  for (let i=0;i<freqData.length;i++) sum += freqData[i];
+  return (sum/freqData.length)/255;
+}
+
+playHeart.addEventListener('click', () => {
+  setupAudioAnalyser();
+  audio.volume = 0.85;
+  audio.play().then(() => {
+    playHeart.classList.add('hidden');
+    playHint.classList.add('hidden');
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  }).catch(() => {
+    playHint.textContent = 'فایل آهنگ پیدا نشد یا اجازه پخش داده نشد 🎵';
+  });
+});
+
+/* =====================================================================
+   11) LOADING SCREEN — luxury intro, then hands off to the camera dolly-in
+   ===================================================================== */
+const loadingScreen = document.getElementById('loading-screen');
+const loadBarFill = document.getElementById('loading-bar-fill');
+const loadPercent = document.getElementById('loading-percent');
+let loadProgress = 0;
+function tickLoader(){
+  loadProgress += (100 - loadProgress) * 0.06 + 0.5;
+  if (loadProgress > 100) loadProgress = 100;
+  loadBarFill.style.width = loadProgress + '%';
+  loadPercent.textContent = Math.floor(loadProgress) + '%';
+  if (loadProgress < 100) requestAnimationFrame(tickLoader);
+  else finishLoading();
+}
+requestAnimationFrame(tickLoader);
+function finishLoading(){
+  setTimeout(() => {
+    introCameraSequence();
+    if (window.gsap) {
+      gsap.to(loadingScreen, {
+        opacity:0, duration:1, ease:'power2.out',
+        onComplete: () => { loadingScreen.style.display = 'none'; }
+      });
+    } else {
+      loadingScreen.style.transition = 'opacity 1s ease';
+      loadingScreen.style.opacity = '0';
+      setTimeout(() => { loadingScreen.style.display = 'none'; }, 1000);
+    }
+  }, 250);
+}
+</script>
+</body>
+</html>
